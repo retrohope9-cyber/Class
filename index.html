@@ -116,16 +116,15 @@
     import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // --- YOUR UPDATED FIREBASE CONFIGURATION ---
+    // --- YOUR CORRECT FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-        apiKey: "AIzaSyC0qaz9KkHm7jTP4xhPNQydHmrh90PyGDY",
-        authDomain: "retrohopeai.firebaseapp.com",
-        databaseURL: "https://retrohopeai-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "retrohopeai",
-        storageBucket: "retrohopeai.firebasestorage.app",
-        messagingSenderId: "537267909835",
-        appId: "1:537267909835:web:50eb777d28f150e0edd74e",
-        measurementId: "G-18821G606Q"
+      apiKey: "AIzaSyCo56hgaC3u_tBtS_bN0z2mrY9NQx0xZDg",
+      authDomain: "class9notes-5b2f9.firebaseapp.com",
+      projectId: "class9notes-5b2f9",
+      storageBucket: "class9notes-5b2f9.firebasestorage.app",
+      messagingSenderId: "818425070351",
+      appId: "1:818425070351:web:815e3881e8672a4a48f47a",
+      measurementId: "G-WGDVBDT58H"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -143,7 +142,7 @@
     };
 
     getRedirectResult(auth).catch((error) => {
-        alert("Google Sign-In Error: " + error.message);
+        console.error("Redirect Error:", error);
         const btn = document.getElementById('googleSignBtn');
         if(btn) {
             btn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google Logo"> SIGN IN WITH GOOGLE`;
@@ -153,14 +152,17 @@
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            const date = new Date().toLocaleString();
-            await setDoc(doc(db, "visitors", user.uid), {
-                name: user.displayName,
-                email: user.email,
-                last_seen: date,
-                timestamp: Date.now()
-            }, { merge: true });
-            
+            try {
+                const date = new Date().toLocaleString();
+                await setDoc(doc(db, "visitors", user.uid), {
+                    name: user.displayName,
+                    email: user.email,
+                    last_seen: date,
+                    timestamp: Date.now()
+                }, { merge: true });
+            } catch (error) {
+                console.warn("Could not log visitor to database, checking rules.");
+            }
             navigateTo('homePage');
         } else {
             navigateTo('authPage');
@@ -200,44 +202,54 @@
     window.loadVisitorLogs = async () => {
         const list = document.getElementById('adminList');
         list.innerHTML = "<p style='color:var(--neon-blue); text-align:center;'>Scanning Visitor Logs...</p>";
-        const snap = await getDocs(collection(db, "visitors"));
-        list.innerHTML = "";
-        if(snap.empty) return list.innerHTML = "<p>No visitors recorded yet.</p>";
+        
+        try {
+            const snap = await getDocs(collection(db, "visitors"));
+            list.innerHTML = "";
+            if(snap.empty) return list.innerHTML = "<p>No visitors recorded yet.</p>";
 
-        snap.forEach(docSnap => {
-            const v = docSnap.data();
-            list.innerHTML += `
-                <div class="glass-box" style="border-color: var(--neon-blue); margin-bottom: 15px; max-width: 100%; padding: 15px;">
-                    <h3 style="margin:0 0 5px 0; color:var(--neon-blue);">${v.name}</h3>
-                    <p style="margin:0; font-size: 0.9rem;"><strong>Email:</strong> ${v.email}</p>
-                    <p style="margin:0; font-size: 0.9rem;"><strong>Last Seen:</strong> ${v.last_seen}</p>
-                </div>
-            `;
-        });
+            snap.forEach(docSnap => {
+                const v = docSnap.data();
+                list.innerHTML += `
+                    <div class="glass-box" style="border-color: var(--neon-blue); margin-bottom: 15px; max-width: 100%; padding: 15px;">
+                        <h3 style="margin:0 0 5px 0; color:var(--neon-blue);">${v.name}</h3>
+                        <p style="margin:0; font-size: 0.9rem;"><strong>Email:</strong> ${v.email}</p>
+                        <p style="margin:0; font-size: 0.9rem;"><strong>Last Seen:</strong> ${v.last_seen}</p>
+                    </div>
+                `;
+            });
+        } catch (error) {
+            list.innerHTML = "<p style='color:red;'>Database Error: Check your Firestore Security Rules.</p>";
+        }
     };
 
     window.loadAdminDashboard = async () => {
         const list = document.getElementById('adminList');
         list.innerHTML = "<p style='color:red; text-align:center;'>Accessing Database...</p>";
-        const snap = await getDocs(collection(db, "vaults"));
-        list.innerHTML = "";
-        if(snap.empty) return list.innerHTML = "<p>No users registered yet.</p>";
+        
+        try {
+            const snap = await getDocs(collection(db, "vaults"));
+            list.innerHTML = "";
+            if(snap.empty) return list.innerHTML = "<p>No users registered yet.</p>";
 
-        snap.forEach(docSnap => {
-            const user = docSnap.data();
-            list.innerHTML += `
-                <div class="glass-box" style="border-color: #ff4d4d; margin-bottom: 15px; max-width: 100%; padding: 15px;">
-                    <h3 style="margin-top:0; color:#ff4d4d;">User: ${user.name}</h3>
-                    <p style="margin:5px 0;"><strong>Vault Code:</strong> ${user.code}</p>
-                    <p style="margin:5px 0;"><strong>Password:</strong> <span style="color:#ffaa00;">${user.pass}</span></p>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <button class="submit-btn" style="background:#444; flex:1; padding:10px;" onclick="adminViewPosts('${user.code}')">POSTS</button>
-                        <button class="submit-btn" style="background:#ff4d4d; flex:1; padding:10px;" onclick="forcePurge('${user.code}', '${user.name}')">PURGE</button>
+            snap.forEach(docSnap => {
+                const user = docSnap.data();
+                list.innerHTML += `
+                    <div class="glass-box" style="border-color: #ff4d4d; margin-bottom: 15px; max-width: 100%; padding: 15px;">
+                        <h3 style="margin-top:0; color:#ff4d4d;">User: ${user.name}</h3>
+                        <p style="margin:5px 0;"><strong>Vault Code:</strong> ${user.code}</p>
+                        <p style="margin:5px 0;"><strong>Password:</strong> <span style="color:#ffaa00;">${user.pass}</span></p>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <button class="submit-btn" style="background:#444; flex:1; padding:10px;" onclick="adminViewPosts('${user.code}')">POSTS</button>
+                            <button class="submit-btn" style="background:#ff4d4d; flex:1; padding:10px;" onclick="forcePurge('${user.code}', '${user.name}')">PURGE</button>
+                        </div>
+                        <div id="adminPosts_${user.code}" style="margin-top:10px; font-size:0.9rem; color:#aaa;"></div>
                     </div>
-                    <div id="adminPosts_${user.code}" style="margin-top:10px; font-size:0.9rem; color:#aaa;"></div>
-                </div>
-            `;
-        });
+                `;
+            });
+        } catch (error) {
+            list.innerHTML = "<p style='color:red;'>Database Error: Check your Firestore Security Rules.</p>";
+        }
     };
 
     window.adminViewPosts = async (code) => {
@@ -265,27 +277,37 @@
         const code = document.getElementById('rCode').value.trim();
         const pass = document.getElementById('rPass').value.trim();
         if(code.length !== 3 || !name || !pass) return alert("Fill all fields!");
-        const nameLower = name.toLowerCase();
-        const q = query(collection(db, "vaults"), where("name_lower", "==", nameLower));
-        const snap = await getDocs(q);
-        if(!snap.empty) return alert("Username already taken! (Case-Insensitive Rule Applied)");
-        const vaultRef = doc(db, "vaults", code);
-        const vSnap = await getDoc(vaultRef);
-        if(vSnap.exists()) return alert("3-Digit Code taken!");
-        await setDoc(vaultRef, { name, name_lower: nameLower, pass, code });
-        alert("Registered Successfully."); navigateTo('vaultAccessPage');
+        
+        try {
+            const nameLower = name.toLowerCase();
+            const q = query(collection(db, "vaults"), where("name_lower", "==", nameLower));
+            const snap = await getDocs(q);
+            if(!snap.empty) return alert("Username already taken! (Case-Insensitive Rule Applied)");
+            const vaultRef = doc(db, "vaults", code);
+            const vSnap = await getDoc(vaultRef);
+            if(vSnap.exists()) return alert("3-Digit Code taken!");
+            await setDoc(vaultRef, { name, name_lower: nameLower, pass, code });
+            alert("Registered Successfully."); navigateTo('vaultAccessPage');
+        } catch (error) {
+            alert("Registration blocked by Database Security Rules.");
+        }
     };
 
     window.loginVault = async () => {
         const code = document.getElementById('vCode').value;
         const name = document.getElementById('vName').value;
         const pass = document.getElementById('vPass').value;
-        const snap = await getDoc(doc(db, "vaults", code));
-        if(snap.exists() && snap.data().name === name && snap.data().pass === pass) {
-            currentVault = snap.data();
-            document.getElementById('userTitle').innerText = "Vault: " + code;
-            navigateTo('dashboardPage');
-        } else alert("Invalid Credentials!");
+        
+        try {
+            const snap = await getDoc(doc(db, "vaults", code));
+            if(snap.exists() && snap.data().name === name && snap.data().pass === pass) {
+                currentVault = snap.data();
+                document.getElementById('userTitle').innerText = "Vault: " + code;
+                navigateTo('dashboardPage');
+            } else alert("Invalid Credentials!");
+        } catch (error) {
+            alert("Login blocked by Database Security Rules.");
+        }
     };
 
     window.uploadNote = async () => {
@@ -294,13 +316,19 @@
         const file = document.getElementById('imgInp').files[0];
         if(!chap || !file) return alert("Missing info!");
         document.getElementById('upBtn').innerText = "Uploading...";
-        const fd = new FormData(); fd.append("image", file);
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API}`, {method: "POST", body: fd});
-        const json = await res.json();
-        await addDoc(collection(db, "all_notes"), { author: currentVault.name, vault_code: currentVault.code, subject: sub, chapter: chap, url: json.data.url });
-        alert("Published!"); 
-        document.getElementById('upBtn').innerText = "UPLOAD TO HUB";
-        navigateTo('homePage');
+        
+        try {
+            const fd = new FormData(); fd.append("image", file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API}`, {method: "POST", body: fd});
+            const json = await res.json();
+            await addDoc(collection(db, "all_notes"), { author: currentVault.name, vault_code: currentVault.code, subject: sub, chapter: chap, url: json.data.url });
+            alert("Published!"); 
+            document.getElementById('upBtn').innerText = "UPLOAD TO HUB";
+            navigateTo('homePage');
+        } catch (error) {
+            alert("Upload failed. Check connection or Database Rules.");
+            document.getElementById('upBtn').innerText = "UPLOAD TO HUB";
+        }
     };
 
     const subs = ["SST", "G.K", "Computer", "H.LANG", "Science", "Eng Lit", "Eng gra", "Eng Lang", "H.Lit", "MATHS"];
@@ -312,12 +340,17 @@
     async function loadChapters(sub) {
         selSub = sub; navigateTo('chapterPage');
         const grid = document.getElementById('chapGrid'); grid.innerHTML = "Loading...";
-        const q = query(collection(db, "all_notes"), where("subject", "==", sub));
-        const snap = await getDocs(q);
-        const chaps = new Set(); snap.forEach(d => chaps.add(d.data().chapter));
-        grid.innerHTML = "";
-        if(chaps.size === 0) grid.innerHTML = "<p style='text-align:center;'>No chapters posted yet.</p>";
-        chaps.forEach(c => { const b = document.createElement('div'); b.className = 'item-btn'; b.innerText = c; b.onclick = () => loadPosters(c); grid.appendChild(b); });
+        
+        try {
+            const q = query(collection(db, "all_notes"), where("subject", "==", sub));
+            const snap = await getDocs(q);
+            const chaps = new Set(); snap.forEach(d => chaps.add(d.data().chapter));
+            grid.innerHTML = "";
+            if(chaps.size === 0) grid.innerHTML = "<p style='text-align:center;'>No chapters posted yet.</p>";
+            chaps.forEach(c => { const b = document.createElement('div'); b.className = 'item-btn'; b.innerText = c; b.onclick = () => loadPosters(c); grid.appendChild(b); });
+        } catch (error) {
+            grid.innerHTML = "<p style='color:red;'>Could not load chapters. Check Database Rules.</p>";
+        }
     }
 
     async function loadPosters(chap) {
@@ -341,4 +374,3 @@
 </script>
 </body>
 </html>
-                
