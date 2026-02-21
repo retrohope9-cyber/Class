@@ -20,6 +20,7 @@
         .grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; max-width: 400px; }
         .item-btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; text-transform: uppercase; color: #fff; transition: 0.2s; }
         .item-btn:active { background: var(--neon-blue); color: #000; }
+        .item-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .glass-box { background: var(--glass); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); margin-bottom: 20px;}
         input, select, button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #000; color: #fff; font-family: inherit; }
         .submit-btn { background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); border: none; font-weight: bold; cursor: pointer;}
@@ -36,7 +37,7 @@
         <div class="glass-box" style="margin-top: 10vh; text-align: center;">
             <h1 style="font-size: 2rem;">HUB SECURED</h1>
             <p style="color: #888; margin-bottom: 30px;">Verification Required to View Notes</p>
-            <button class="item-btn" style="background: white; color: black; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="signInGoogle()">
+            <button id="googleSignBtn" class="item-btn" style="background: white; color: black; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="signInGoogle()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google Logo">
                 SIGN IN WITH GOOGLE
             </button>
@@ -114,7 +115,8 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    // CHANGED: Imported signInWithRedirect instead of signInWithPopup
+    import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCo56hgaC3u_tBtS_bN0z2mrY9NQx0xZDg",
@@ -139,10 +141,19 @@
         document.getElementById(id).classList.add('active');
     };
 
+    // Check if there was an error during the redirect process
+    getRedirectResult(auth).catch((error) => {
+        alert("Google Sign-In Error: " + error.message);
+        const btn = document.getElementById('googleSignBtn');
+        if(btn) {
+            btn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google Logo"> SIGN IN WITH GOOGLE`;
+            btn.disabled = false;
+        }
+    });
+
     // --- GOOGLE AUTHENTICATION LOGIC ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // Log visitor info to Admin Logs
             const date = new Date().toLocaleString();
             await setDoc(doc(db, "visitors", user.uid), {
                 name: user.displayName,
@@ -157,8 +168,19 @@
         }
     });
 
-    window.signInGoogle = () => {
-        signInWithPopup(auth, provider).catch((error) => alert("Sign In Failed: " + error.message));
+    // CHANGED: Using signInWithRedirect to fix mobile phone blocking
+    window.signInGoogle = async () => {
+        const btn = document.getElementById('googleSignBtn');
+        btn.innerHTML = "REDIRECTING...";
+        btn.disabled = true; 
+        
+        try {
+            await signInWithRedirect(auth, provider);
+        } catch (error) {
+            alert("Sign In Request Failed: " + error.message);
+            btn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google Logo"> SIGN IN WITH GOOGLE`;
+            btn.disabled = false;
+        }
     };
 
     window.logOutGoogle = () => {
@@ -182,14 +204,9 @@
     window.loadVisitorLogs = async () => {
         const list = document.getElementById('adminList');
         list.innerHTML = "<p style='color:var(--neon-blue); text-align:center;'>Scanning Visitor Logs...</p>";
-        
         const snap = await getDocs(collection(db, "visitors"));
         list.innerHTML = "";
-        
-        if(snap.empty) {
-            list.innerHTML = "<p>No visitors recorded yet.</p>";
-            return;
-        }
+        if(snap.empty) return list.innerHTML = "<p>No visitors recorded yet.</p>";
 
         snap.forEach(docSnap => {
             const v = docSnap.data();
@@ -209,7 +226,6 @@
         list.innerHTML = "<p style='color:red; text-align:center;'>Accessing Database...</p>";
         const snap = await getDocs(collection(db, "vaults"));
         list.innerHTML = "";
-        
         if(snap.empty) return list.innerHTML = "<p>No users registered yet.</p>";
 
         snap.forEach(docSnap => {
@@ -331,5 +347,4 @@
     }
 </script>
 </body>
-    </html>
-    
+</html>
