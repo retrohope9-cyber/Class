@@ -9,7 +9,6 @@
         :root { --neon-blue: #00d2ff; --neon-purple: #9d50bb; --bg: #05070a; --glass: rgba(255, 255, 255, 0.05); }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; background: var(--bg); background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #05070a 100%); color: #fff; }
         
-        /* The main scrollable area */
         #app-container { height: 100%; width: 100%; overflow-y: auto; overflow-x: hidden; }
 
         .page { display: none; width: 100%; min-height: 100vh; padding: 20px; box-sizing: border-box; }
@@ -115,16 +114,18 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    // CHANGED: Imported signInWithRedirect instead of signInWithPopup
     import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+    // --- YOUR UPDATED FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-        apiKey: "AIzaSyCo56hgaC3u_tBtS_bN0z2mrY9NQx0xZDg",
-        authDomain: "class9notes-5b2f9.firebaseapp.com",
-        projectId: "class9notes-5b2f9",
-        storageBucket: "class9notes-5b2f9.firebasestorage.app",
-        messagingSenderId: "818425070351",
-        appId: "1:818425070351:web:815e3881e8672a4a48f47a"
+        apiKey: "AIzaSyC0qaz9KkHm7jTP4xhPNQydHmrh90PyGDY",
+        authDomain: "retrohopeai.firebaseapp.com",
+        databaseURL: "https://retrohopeai-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "retrohopeai",
+        storageBucket: "retrohopeai.firebasestorage.app",
+        messagingSenderId: "537267909835",
+        appId: "1:537267909835:web:50eb777d28f150e0edd74e",
+        measurementId: "G-18821G606Q"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -141,7 +142,6 @@
         document.getElementById(id).classList.add('active');
     };
 
-    // Check if there was an error during the redirect process
     getRedirectResult(auth).catch((error) => {
         alert("Google Sign-In Error: " + error.message);
         const btn = document.getElementById('googleSignBtn');
@@ -151,7 +151,6 @@
         }
     });
 
-    // --- GOOGLE AUTHENTICATION LOGIC ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const date = new Date().toLocaleString();
@@ -168,7 +167,6 @@
         }
     });
 
-    // CHANGED: Using signInWithRedirect to fix mobile phone blocking
     window.signInGoogle = async () => {
         const btn = document.getElementById('googleSignBtn');
         btn.innerHTML = "REDIRECTING...";
@@ -187,7 +185,6 @@
         if(confirm("Sign out of Mount Assisi Hub?")) signOut(auth);
     };
 
-    // --- GATEKEEPER & ADMIN ACCESS ---
     window.startVaultFlow = () => {
         const authCode = prompt("Authorization Code:");
         if(authCode === "@RetroHope2026") {
@@ -200,7 +197,6 @@
         }
     };
 
-    // --- ADMIN: VISITOR LOGS ---
     window.loadVisitorLogs = async () => {
         const list = document.getElementById('adminList');
         list.innerHTML = "<p style='color:var(--neon-blue); text-align:center;'>Scanning Visitor Logs...</p>";
@@ -220,7 +216,6 @@
         });
     };
 
-    // --- ADMIN: VAULT MANAGEMENT ---
     window.loadAdminDashboard = async () => {
         const list = document.getElementById('adminList');
         list.innerHTML = "<p style='color:red; text-align:center;'>Accessing Database...</p>";
@@ -265,7 +260,6 @@
         loadAdminDashboard(); 
     };
 
-    // --- VAULT REGISTRATION & LOGIN ---
     window.registerUser = async () => {
         const name = document.getElementById('rName').value.trim();
         const code = document.getElementById('rCode').value.trim();
@@ -309,7 +303,6 @@
         navigateTo('homePage');
     };
 
-    // --- SEE HUB NAVIGATION ---
     const subs = ["SST", "G.K", "Computer", "H.LANG", "Science", "Eng Lit", "Eng gra", "Eng Lang", "H.Lit", "MATHS"];
     subs.forEach(s => {
         const b = document.createElement('div'); b.className = 'item-btn'; b.innerText = s;
@@ -348,3 +341,4 @@
 </script>
 </body>
 </html>
+                
