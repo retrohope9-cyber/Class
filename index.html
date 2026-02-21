@@ -2,106 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mount Assisi Class 9 Notes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mount Assisi Notes Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --neon-blue: #00d2ff; --neon-purple: #9d50bb; --bg: #05070a; --glass: rgba(255, 255, 255, 0.05); }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #05070a 100%); color: #fff; margin: 0; min-height: 100vh; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; background: var(--bg); background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #05070a 100%); color: #fff; }
         
-        .page { display: none; width: 100%; min-height: 100vh; padding: 40px 20px; box-sizing: border-box; animation: slideIn 0.4s ease-out; }
-        .active { display: flex; flex-direction: column; align-items: center; }
+        /* The main scrollable area */
+        #app-container { height: 100%; width: 100%; overflow-y: auto; overflow-x: hidden; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
-
-        h1 { font-family: 'Orbitron', sans-serif; text-align: center; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
+        .page { display: none; width: 100%; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        .active { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Navigation */
-        .card-container { display: flex; gap: 20px; margin-top: 50px; }
-        .menu-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 40px 60px; border-radius: 20px; cursor: pointer; backdrop-filter: blur(10px); transition: 0.3s; text-align: center; }
-        .menu-card:hover { border-color: var(--neon-blue); transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2); }
-
-        /* Grid Layouts */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 800px; }
-        .item-btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; font-weight: 600; text-transform: uppercase; }
-        .item-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
-
-        .back-btn { align-self: flex-start; margin-bottom: 20px; color: var(--neon-blue); cursor: pointer; font-weight: bold; text-decoration: none; border: 1px solid var(--neon-blue); padding: 5px 15px; border-radius: 5px; }
-
-        /* Form Styling */
-        .glass-box { background: var(--glass); padding: 30px; border-radius: 25px; width: 100%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-        input, select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: #000; color: #fff; font-family: inherit; }
-        .submit-btn { background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); border: none; cursor: pointer; font-weight: bold; font-family: 'Orbitron', sans-serif; text-transform: uppercase; margin-top: 20px; }
-
-        /* Notes Display */
-        .note-card { background: var(--glass); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 20px; box-sizing: border-box; }
-        .poster-info { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-        .poster-name { font-weight: bold; color: var(--neon-blue); font-size: 1.1rem; }
-        .note-card img { width: 100%; border-radius: 15px; border: 2px solid var(--neon-purple); cursor: zoom-in; }
+        h1 { font-family: 'Orbitron', sans-serif; text-align: center; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.5rem; }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; max-width: 400px; }
+        .item-btn { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; text-transform: uppercase; color: #fff; transition: 0.2s; }
+        .item-btn:active { background: var(--neon-blue); color: #000; }
+        .glass-box { background: var(--glass); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); margin-bottom: 20px;}
+        input, select, button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #000; color: #fff; font-family: inherit; }
+        .submit-btn { background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); border: none; font-weight: bold; cursor: pointer;}
+        .note-card { background: var(--glass); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 15px; }
+        .note-card img { width: 100%; border-radius: 10px; border: 1px solid var(--neon-purple); }
+        .back-btn { align-self: flex-start; margin-bottom: 15px; color: var(--neon-blue); font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="homePage" class="page active">
-        <h1>MOUNT ASSISI CLASS 9 NOTES</h1>
-        <p style="color: #888; font-size: 1.1rem;">BY RETRO HOPE</p>
-        <div class="card-container">
-            <div class="menu-card" onclick="openPost()"><h2>POST</h2></div>
-            <div class="menu-card" onclick="navigateTo('subjectPage')"><h2>SEE</h2></div>
+<div id="app-container">
+
+    <div id="authPage" class="page active">
+        <div class="glass-box" style="margin-top: 10vh; text-align: center;">
+            <h1 style="font-size: 2rem;">HUB SECURED</h1>
+            <p style="color: #888; margin-bottom: 30px;">Verification Required to View Notes</p>
+            <button class="item-btn" style="background: white; color: black; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="signInGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;" alt="Google Logo">
+                SIGN IN WITH GOOGLE
+            </button>
         </div>
     </div>
 
-    <div id="postPage" class="page">
-        <div class="back-btn" onclick="navigateTo('homePage')">← BACK HOME</div>
+    <div id="homePage" class="page">
+        <h1>MOUNT ASSISI NOTES HUB</h1>
+        <p style="color: #888; font-size: 0.8rem;">BY RETRO HOPE</p>
+        <div style="display:flex; gap:15px; margin-top:30px; width: 100%; max-width: 400px;">
+            <div class="item-btn" style="flex: 1; padding: 30px;" onclick="startVaultFlow()">POST</div>
+            <div class="item-btn" style="flex: 1; padding: 30px;" onclick="navigateTo('subjectPage')">SEE</div>
+        </div>
+        <button style="background:none; border:none; color:#888; margin-top:50px; text-decoration:underline; cursor:pointer;" onclick="logOutGoogle()">Sign Out</button>
+    </div>
+
+    <div id="vaultAccessPage" class="page">
+        <div class="back-btn" onclick="navigateTo('homePage')">← EXIT</div>
         <div class="glass-box">
-            <h1 style="font-size: 1.5rem;">Upload Note</h1>
-            <input type="text" id="userName" placeholder="Your Unique Name">
-            <select id="postSubject">
-                <option value="">Select Subject</option>
+            <h1>VAULT LOGIN</h1>
+            <input type="text" id="vCode" placeholder="3-Digit Code" maxlength="3">
+            <input type="text" id="vName" placeholder="Username">
+            <input type="password" id="vPass" placeholder="Password">
+            <button class="submit-btn" onclick="loginVault()">OPEN VAULT</button>
+            <button style="background:none; border:1px solid #444;" onclick="navigateTo('registerPage')">CREATE NEW ID</button>
+        </div>
+    </div>
+
+    <div id="registerPage" class="page">
+        <div class="back-btn" onclick="navigateTo('vaultAccessPage')">← BACK</div>
+        <div class="glass-box">
+            <h1>NEW VAULT</h1>
+            <input type="text" id="rCode" placeholder="Pick 3-Digit Code" maxlength="3">
+            <input type="text" id="rName" placeholder="Unique Username">
+            <input type="password" id="rPass" placeholder="Set Password">
+            <button class="submit-btn" onclick="registerUser()">REGISTER</button>
+        </div>
+    </div>
+
+    <div id="dashboardPage" class="page">
+        <div class="back-btn" onclick="navigateTo('homePage')">← EXIT</div>
+        <h1 id="userTitle">Vault</h1>
+        <div class="glass-box">
+            <select id="pSub">
                 <option>SST</option><option>G.K</option><option>Computer</option>
                 <option>H.LANG</option><option>Science</option><option>Eng Lit</option>
                 <option>Eng gra</option><option>Eng Lang</option><option>H.Lit</option><option>MATHS</option>
             </select>
-            <input type="text" id="postChapter" placeholder="Enter Chapter Name (e.g. Ch-1)">
-            <select id="postSource">
-                <option value="Copy">Handwritten (Copy)</option>
-                <option value="Book">Printed (Book)</option>
-            </select>
-            <input type="file" id="imageInput" accept="image/*">
-            <button class="submit-btn" id="uploadBtn">PUBLISH TO HUB</button>
+            <input type="text" id="pChap" placeholder="Chapter Name (e.g. Ch-1)">
+            <input type="file" id="imgInp" accept="image/*">
+            <button class="submit-btn" id="upBtn" onclick="uploadNote()">UPLOAD TO HUB</button>
         </div>
     </div>
 
-    <div id="subjectPage" class="page">
-        <div class="back-btn" onclick="navigateTo('homePage')">← BACK</div>
-        <h1>Select Subject</h1>
-        <div class="grid" id="subjectGrid"></div>
-    </div>
+    <div id="subjectPage" class="page"><div class="back-btn" onclick="navigateTo('homePage')">← BACK</div><h1>SUBJECTS</h1><div class="grid" id="subGrid"></div></div>
+    <div id="chapterPage" class="page"><div class="back-btn" onclick="navigateTo('subjectPage')">← BACK</div><h1 id="chapterTitle">CHAPTERS</h1><div class="grid" id="chapGrid"></div></div>
+    <div id="posterListPage" class="page"><div class="back-btn" onclick="navigateTo('chapterPage')">← BACK</div><h1 id="posterTitle">POSTERS</h1><div class="grid" id="posterGrid"></div></div>
+    <div id="galleryPage" class="page"><div class="back-btn" onclick="navigateTo('posterListPage')">← BACK</div><h1 id="galleryTitle">NOTES</h1><div id="notesArea" style="width:100%; max-width:500px;"></div></div>
 
-    <div id="chapterPage" class="page">
-        <div class="back-btn" onclick="navigateTo('subjectPage')">← BACK</div>
-        <h1 id="selectedSubTitle">Chapters</h1>
-        <div class="grid" id="chapterList"></div>
-    </div>
-
-    <div id="sourcePage" class="page">
-        <div class="back-btn" onclick="navigateTo('chapterPage')">← BACK</div>
-        <h1>Select Type</h1>
-        <div class="grid">
-            <div class="item-btn" onclick="viewFinalNotes('Book')">FROM BOOK</div>
-            <div class="item-btn" onclick="viewFinalNotes('Copy')">FROM COPY</div>
+    <div id="adminPage" class="page">
+        <div class="back-btn" onclick="navigateTo('homePage')">← CLOSE TERMINAL</div>
+        <h1 style="color: #ff4d4d; text-shadow: 0 0 10px red;">ADMIN OVERRIDE</h1>
+        <p style="text-align:center; color:#888;">System Master: Retro Hope</p>
+        
+        <div style="display:flex; gap:10px; width:100%; max-width:600px; margin-bottom: 20px;">
+            <button class="submit-btn" style="background:#444; flex:1;" onclick="loadAdminDashboard()">VIEW VAULTS</button>
+            <button class="submit-btn" style="background:var(--neon-blue); flex:1; color:black;" onclick="loadVisitorLogs()">VIEW VISITORS</button>
         </div>
+
+        <div id="adminList" style="width: 100%; max-width: 600px;"></div>
     </div>
 
-    <div id="notesPage" class="page">
-        <div class="back-btn" onclick="navigateTo('sourcePage')">← BACK</div>
-        <h1 id="finalTitle">Notes Gallery</h1>
-        <div id="notesDisplayArea" style="width: 100%; max-width: 800px;"></div>
-    </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCo56hgaC3u_tBtS_bN0z2mrY9NQx0xZDg",
@@ -114,137 +127,209 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
     const IMGBB_API = "965fa1c8fd25314c86fc7e40d845a83a";
 
-    let currentSubject = "";
-    let currentChapter = "";
+    let currentVault = null;
+    let selSub = ""; let selChap = "";
 
-    window.navigateTo = (pageId) => {
+    window.navigateTo = (id) => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        window.scrollTo(0,0);
+        document.getElementById(id).classList.add('active');
     };
 
-    // PASSWORD GATE
-    window.openPost = () => {
-        const access = prompt("Enter Secret Password to Post:");
-        if (access === "@777") {
-            navigateTo('postPage');
+    // --- GOOGLE AUTHENTICATION LOGIC ---
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // Log visitor info to Admin Logs
+            const date = new Date().toLocaleString();
+            await setDoc(doc(db, "visitors", user.uid), {
+                name: user.displayName,
+                email: user.email,
+                last_seen: date,
+                timestamp: Date.now()
+            }, { merge: true });
+            
+            navigateTo('homePage');
         } else {
-            alert("Access Denied: Incorrect Password.");
+            navigateTo('authPage');
         }
-    };
-
-    // 1. Initialize Subjects
-    const subs = ["SST", "G.K", "Computer", "H.LANG", "Science", "Eng Lit", "Eng gra", "Eng Lang", "H.Lit", "MATHS"];
-    const sGrid = document.getElementById('subjectGrid');
-    subs.forEach(s => {
-        const btn = document.createElement('div');
-        btn.className = 'item-btn';
-        btn.innerText = s;
-        btn.onclick = () => loadDynamicChapters(s);
-        sGrid.appendChild(btn);
     });
 
-    // 2. Load Chapters based on existing posts
-    async function loadDynamicChapters(sub) {
-        currentSubject = sub;
-        document.getElementById('selectedSubTitle').innerText = sub + " Chapters";
-        navigateTo('chapterPage');
-        
-        const list = document.getElementById('chapterList');
-        list.innerHTML = "<p>Scanning for posts...</p>";
-
-        const q = query(collection(db, "all_notes"), where("subject", "==", sub));
-        const snap = await getDocs(q);
-        
-        const chapters = new Set();
-        snap.forEach(doc => chapters.add(doc.data().chapter));
-
-        list.innerHTML = "";
-        if(chapters.size === 0) {
-            list.innerHTML = "<p>No chapters have been posted for this subject yet.</p>";
-            return;
-        }
-
-        chapters.forEach(ch => {
-            const btn = document.createElement('div');
-            btn.className = 'item-btn';
-            btn.innerText = ch;
-            btn.onclick = () => { currentChapter = ch; navigateTo('sourcePage'); };
-            list.appendChild(btn);
-        });
-    }
-
-    // 3. POSTING LOGIC
-    document.getElementById('uploadBtn').onclick = async () => {
-        const name = document.getElementById('userName').value.trim();
-        const sub = document.getElementById('postSubject').value;
-        const chap = document.getElementById('postChapter').value.trim();
-        const src = document.getElementById('postSource').value;
-        const file = document.getElementById('imageInput').files[0];
-
-        if(!name || !chap || !file || !sub) return alert("Fill all info!");
-
-        const btn = document.getElementById('uploadBtn');
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        // Image Upload
-        const formData = new FormData();
-        formData.append("image", file);
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API}`, {method: "POST", body: formData});
-        const img = await res.json();
-
-        // Save to Firebase
-        await addDoc(collection(db, "all_notes"), {
-            author: name,
-            author_lower: name.toLowerCase(),
-            subject: sub,
-            chapter: chap,
-            source: src,
-            url: img.data.url,
-            timestamp: new Date().getTime()
-        });
-
-        alert("Notes Published Successfully!");
-        location.reload();
+    window.signInGoogle = () => {
+        signInWithPopup(auth, provider).catch((error) => alert("Sign In Failed: " + error.message));
     };
 
-    // 4. VIEW LOGIC
-    window.viewFinalNotes = async (sourceType) => {
-        navigateTo('notesPage');
-        const area = document.getElementById('notesDisplayArea');
-        area.innerHTML = "<p>Fetching handwriting...</p>";
+    window.logOutGoogle = () => {
+        if(confirm("Sign out of Mount Assisi Hub?")) signOut(auth);
+    };
+
+    // --- GATEKEEPER & ADMIN ACCESS ---
+    window.startVaultFlow = () => {
+        const authCode = prompt("Authorization Code:");
+        if(authCode === "@RetroHope2026") {
+            loadAdminDashboard();
+            navigateTo('adminPage');
+        } else if(authCode === "@777") {
+            navigateTo('vaultAccessPage');
+        } else {
+            alert("Access Denied.");
+        }
+    };
+
+    // --- ADMIN: VISITOR LOGS ---
+    window.loadVisitorLogs = async () => {
+        const list = document.getElementById('adminList');
+        list.innerHTML = "<p style='color:var(--neon-blue); text-align:center;'>Scanning Visitor Logs...</p>";
         
-        const q = query(collection(db, "all_notes"), 
-            where("subject", "==", currentSubject),
-            where("chapter", "==", currentChapter),
-            where("source", "==", sourceType)
-        );
-        
-        const snap = await getDocs(q);
-        area.innerHTML = `<h2 style='text-align:center; color:var(--neon-blue)'>${currentSubject} - ${currentChapter}</h2>`;
+        const snap = await getDocs(collection(db, "visitors"));
+        list.innerHTML = "";
         
         if(snap.empty) {
-            area.innerHTML += "<p style='text-align:center'>No notes found in this category.</p>";
+            list.innerHTML = "<p>No visitors recorded yet.</p>";
             return;
         }
 
-        snap.forEach(doc => {
-            const d = doc.data();
-            area.innerHTML += `
-                <div class="note-card">
-                    <div class="poster-info">
-                        <span style="color:#888; font-size:0.8rem;">AUTHOR:</span>
-                        <span class="poster-name">${d.author}</span>
-                    </div>
-                    <img src="${d.url}" onclick="window.open('${d.url}', '_blank')">
+        snap.forEach(docSnap => {
+            const v = docSnap.data();
+            list.innerHTML += `
+                <div class="glass-box" style="border-color: var(--neon-blue); margin-bottom: 15px; max-width: 100%; padding: 15px;">
+                    <h3 style="margin:0 0 5px 0; color:var(--neon-blue);">${v.name}</h3>
+                    <p style="margin:0; font-size: 0.9rem;"><strong>Email:</strong> ${v.email}</p>
+                    <p style="margin:0; font-size: 0.9rem;"><strong>Last Seen:</strong> ${v.last_seen}</p>
                 </div>
             `;
         });
     };
+
+    // --- ADMIN: VAULT MANAGEMENT ---
+    window.loadAdminDashboard = async () => {
+        const list = document.getElementById('adminList');
+        list.innerHTML = "<p style='color:red; text-align:center;'>Accessing Database...</p>";
+        const snap = await getDocs(collection(db, "vaults"));
+        list.innerHTML = "";
+        
+        if(snap.empty) return list.innerHTML = "<p>No users registered yet.</p>";
+
+        snap.forEach(docSnap => {
+            const user = docSnap.data();
+            list.innerHTML += `
+                <div class="glass-box" style="border-color: #ff4d4d; margin-bottom: 15px; max-width: 100%; padding: 15px;">
+                    <h3 style="margin-top:0; color:#ff4d4d;">User: ${user.name}</h3>
+                    <p style="margin:5px 0;"><strong>Vault Code:</strong> ${user.code}</p>
+                    <p style="margin:5px 0;"><strong>Password:</strong> <span style="color:#ffaa00;">${user.pass}</span></p>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="submit-btn" style="background:#444; flex:1; padding:10px;" onclick="adminViewPosts('${user.code}')">POSTS</button>
+                        <button class="submit-btn" style="background:#ff4d4d; flex:1; padding:10px;" onclick="forcePurge('${user.code}', '${user.name}')">PURGE</button>
+                    </div>
+                    <div id="adminPosts_${user.code}" style="margin-top:10px; font-size:0.9rem; color:#aaa;"></div>
+                </div>
+            `;
+        });
+    };
+
+    window.adminViewPosts = async (code) => {
+        const div = document.getElementById(`adminPosts_${code}`);
+        div.innerHTML = "Scanning hub...";
+        const q = query(collection(db, "all_notes"), where("vault_code", "==", code));
+        const snap = await getDocs(q);
+        if(snap.empty) return div.innerHTML = "No posts found.";
+        div.innerHTML = `<strong>Total Posts: ${snap.size}</strong><br>`;
+        snap.forEach(d => div.innerHTML += `- ${d.data().subject} (${d.data().chapter})<br>`);
+    };
+
+    window.forcePurge = async (code, userName) => {
+        if(prompt(`TYPE "PURGE" TO DELETE ${userName}`) !== "PURGE") return alert("Cancelled.");
+        await deleteDoc(doc(db, "vaults", code));
+        const q = query(collection(db, "all_notes"), where("vault_code", "==", code));
+        const snap = await getDocs(q);
+        snap.forEach(async (d) => await deleteDoc(doc(db, "all_notes", d.id)));
+        alert(`TARGET ELIMINATED: ${userName} erased.`);
+        loadAdminDashboard(); 
+    };
+
+    // --- VAULT REGISTRATION & LOGIN ---
+    window.registerUser = async () => {
+        const name = document.getElementById('rName').value.trim();
+        const code = document.getElementById('rCode').value.trim();
+        const pass = document.getElementById('rPass').value.trim();
+        if(code.length !== 3 || !name || !pass) return alert("Fill all fields!");
+        const nameLower = name.toLowerCase();
+        const q = query(collection(db, "vaults"), where("name_lower", "==", nameLower));
+        const snap = await getDocs(q);
+        if(!snap.empty) return alert("Username already taken! (Case-Insensitive Rule Applied)");
+        const vaultRef = doc(db, "vaults", code);
+        const vSnap = await getDoc(vaultRef);
+        if(vSnap.exists()) return alert("3-Digit Code taken!");
+        await setDoc(vaultRef, { name, name_lower: nameLower, pass, code });
+        alert("Registered Successfully."); navigateTo('vaultAccessPage');
+    };
+
+    window.loginVault = async () => {
+        const code = document.getElementById('vCode').value;
+        const name = document.getElementById('vName').value;
+        const pass = document.getElementById('vPass').value;
+        const snap = await getDoc(doc(db, "vaults", code));
+        if(snap.exists() && snap.data().name === name && snap.data().pass === pass) {
+            currentVault = snap.data();
+            document.getElementById('userTitle').innerText = "Vault: " + code;
+            navigateTo('dashboardPage');
+        } else alert("Invalid Credentials!");
+    };
+
+    window.uploadNote = async () => {
+        const sub = document.getElementById('pSub').value;
+        const chap = document.getElementById('pChap').value.trim();
+        const file = document.getElementById('imgInp').files[0];
+        if(!chap || !file) return alert("Missing info!");
+        document.getElementById('upBtn').innerText = "Uploading...";
+        const fd = new FormData(); fd.append("image", file);
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API}`, {method: "POST", body: fd});
+        const json = await res.json();
+        await addDoc(collection(db, "all_notes"), { author: currentVault.name, vault_code: currentVault.code, subject: sub, chapter: chap, url: json.data.url });
+        alert("Published!"); 
+        document.getElementById('upBtn').innerText = "UPLOAD TO HUB";
+        navigateTo('homePage');
+    };
+
+    // --- SEE HUB NAVIGATION ---
+    const subs = ["SST", "G.K", "Computer", "H.LANG", "Science", "Eng Lit", "Eng gra", "Eng Lang", "H.Lit", "MATHS"];
+    subs.forEach(s => {
+        const b = document.createElement('div'); b.className = 'item-btn'; b.innerText = s;
+        b.onclick = () => loadChapters(s); document.getElementById('subGrid').appendChild(b);
+    });
+
+    async function loadChapters(sub) {
+        selSub = sub; navigateTo('chapterPage');
+        const grid = document.getElementById('chapGrid'); grid.innerHTML = "Loading...";
+        const q = query(collection(db, "all_notes"), where("subject", "==", sub));
+        const snap = await getDocs(q);
+        const chaps = new Set(); snap.forEach(d => chaps.add(d.data().chapter));
+        grid.innerHTML = "";
+        if(chaps.size === 0) grid.innerHTML = "<p style='text-align:center;'>No chapters posted yet.</p>";
+        chaps.forEach(c => { const b = document.createElement('div'); b.className = 'item-btn'; b.innerText = c; b.onclick = () => loadPosters(c); grid.appendChild(b); });
+    }
+
+    async function loadPosters(chap) {
+        selChap = chap; navigateTo('posterListPage');
+        const grid = document.getElementById('posterGrid'); grid.innerHTML = "Finding Posters...";
+        const q = query(collection(db, "all_notes"), where("subject", "==", selSub), where("chapter", "==", chap));
+        const snap = await getDocs(q);
+        const users = new Set(); snap.forEach(d => users.add(d.data().author));
+        grid.innerHTML = "";
+        users.forEach(u => { const b = document.createElement('div'); b.className = 'item-btn'; b.innerText = "Notes by " + u; b.onclick = () => loadGallery(u); grid.appendChild(b); });
+    }
+
+    async function loadGallery(user) {
+        navigateTo('galleryPage');
+        const area = document.getElementById('notesArea'); area.innerHTML = "Opening Gallery...";
+        const q = query(collection(db, "all_notes"), where("subject", "==", selSub), where("chapter", "==", selChap), where("author", "==", user));
+        const snap = await getDocs(q);
+        area.innerHTML = `<h2 style="text-align:center">${selSub}: ${selChap}</h2><p style="text-align:center">Student: ${user}</p>`;
+        snap.forEach(d => area.innerHTML += `<div class="note-card"><img src="${d.data().url}" alt="Note Image"></div>`);
+    }
 </script>
 </body>
-  </html>
-      
+    </html>
+    
